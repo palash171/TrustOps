@@ -14,10 +14,9 @@ class CommentServiceTests {
 
     @Test
     void createsAndStoresAComment() {
-        Comment created = commentService.create("  This is a test comment.  ");
-
+        Comment created = commentService.create(" a ");
         assertThat(created.id()).isNotNull();
-        assertThat(created.text()).isEqualTo("This is a test comment.");
+        assertThat(created.text()).isEqualTo("a");
         assertThat(created.receivedAt()).isNotNull();
         assertThat(commentService.findAll()).containsExactly(created);
         Assertions.assertEquals(ModerationStatus.PENDING, created.status());
@@ -25,6 +24,14 @@ class CommentServiceTests {
     @Test
     void startsWithNoComments() {
         Assertions.assertEquals(List.of(), commentService.findAll());
+    }
+    @Test
+    void updatesStatusAndMap() {
+        Comment created = commentService.create(" a ");
+       Comment updated = commentService.updateStatus(created.id(), ModerationStatus.APPROVED);
+       Assertions.assertEquals(ModerationStatus.APPROVED, updated.status());
+       assertThat(commentService.findAll()).contains(updated);
+       assertThat(commentService.findAll()).doesNotContain(created);
     }
 
 }

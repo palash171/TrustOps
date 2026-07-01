@@ -9,6 +9,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+        /// Changes the stored content
+
 @Service // talks to spring to manage oe comment service object
 public class CommentService {
 
@@ -20,6 +22,12 @@ public class CommentService {
         comments.put(c.id(),c); //add comment into map
         return c;
 
+    }
+    public Comment updateStatus(UUID id, ModerationStatus status){
+        Comment old = comments.get(id);
+        Comment updated = new Comment(id,old.text(),status,old.receivedAt());
+        comments.put(id,updated);
+        return updated;
     }
 
 

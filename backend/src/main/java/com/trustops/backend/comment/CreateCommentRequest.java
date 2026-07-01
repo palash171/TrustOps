@@ -3,6 +3,8 @@ package com.trustops.backend.comment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+        /// only the incoming create JSONe
+
 public record CreateCommentRequest(
         // invariant checks
         @NotBlank(message = "Comment text is required")
