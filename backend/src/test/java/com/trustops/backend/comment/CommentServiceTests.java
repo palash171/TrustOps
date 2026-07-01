@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,6 +33,16 @@ class CommentServiceTests {
        Assertions.assertEquals(ModerationStatus.APPROVED, updated.status());
        assertThat(commentService.findAll()).contains(updated);
        assertThat(commentService.findAll()).doesNotContain(created);
+    }
+    @Test
+    void shouldThrowExceptionWhenCommentNotFound() {
+        Assertions.assertThrows(
+                CommentNotFoundException.class,
+                () -> commentService.updateStatus(
+                        UUID.randomUUID(), //random id which is not in the map
+                        ModerationStatus.APPROVED
+                )
+        );
     }
 
 }

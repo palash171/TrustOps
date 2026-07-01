@@ -25,6 +25,7 @@ public class CommentService {
     }
     public Comment updateStatus(UUID id, ModerationStatus status){
         Comment old = comments.get(id);
+        if(old == null){ throw new CommentNotFoundException(id); }
         Comment updated = new Comment(id,old.text(),status,old.receivedAt());
         comments.put(id,updated);
         return updated;
