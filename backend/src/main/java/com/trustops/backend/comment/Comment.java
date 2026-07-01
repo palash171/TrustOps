@@ -6,6 +6,7 @@ import java.util.UUID;
 public record Comment(
         UUID id,
         String text,
+        ModerationStatus status,
         Instant receivedAt
 ) {
 }

@@ -16,7 +16,7 @@ public class CommentService {
 
     //create a new comment to store inside map
     public Comment create(String text){
-        Comment c = new Comment(UUID.randomUUID(), text.strip(), Instant.now());
+        Comment c = new Comment(UUID.randomUUID(), text.strip(), ModerationStatus.PENDING, Instant.now());
         comments.put(c.id(),c); //add comment into map
         return c;
 
