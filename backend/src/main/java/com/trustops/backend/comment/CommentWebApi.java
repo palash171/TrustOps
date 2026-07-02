@@ -11,12 +11,12 @@ import java.util.UUID;
 
 @RestController //this class receives API requests.
 @RequestMapping("/api/v1/comments") //Any request starting with /api/v1/comments  comes here.
-public class CommentController {
+public class CommentWebApi {
 
-    private final CommentService commentService;
+    private final CommentManger commentManger;
 
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
+    public CommentWebApi(CommentManger commentManger) {
+        this.commentManger = commentManger;
     }
 
     @PostMapping //send
@@ -25,15 +25,15 @@ public class CommentController {
             @Valid // configure invariant checks
             @RequestBody //extract json body convert into createCommentRequest object
             CreateCommentRequest request) {
-        return commentService.create(request.text());
+        return commentManger.create(request.text());
     }
     @PatchMapping("/{id}/status")
     public Comment updateCommentStatus(@PathVariable UUID id, @Valid @RequestBody UpdateCommentStatusRequest update) {
-        return commentService.updateStatus(id, update.status());
+        return commentManger.updateStatus(id, update.status());
     }
 
     @GetMapping //get
     public List<Comment> findAll() {
-        return commentService.findAll();
+        return commentManger.findAll();
     }
 }

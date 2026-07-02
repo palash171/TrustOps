@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:17-alpine #ready made ppostgreSQL
+    environment: #create databse,username,localpass
+      POSTGRES_DB: trustops
+      POSTGRES_USER: trustops
+      POSTGRES_PASSWORD: trustops
+    ports:
+      - "5432:5432"
+    volumes:
+      - trustops-data:/var/lib/postgresql/data
+
+volumes:
+  trustops-data:
