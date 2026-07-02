@@ -39,8 +39,8 @@ public class Comment {
     protected Comment() {}
 
     //getters
-    public UUID id() {return id;}
-    public String text() {return text;}
-    public ModerationStatus status() {return status;}
-    public Instant receivedAt() {return receivedAt;}
+    public UUID getId() {return id;}
+    public String getText() {return text;}
+    public ModerationStatus getStatus() {return status;}
+    public Instant getReceivedAt() {return receivedAt;}
 }
