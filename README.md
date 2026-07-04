@@ -236,8 +236,6 @@ These questions drive future implementation and testing; the README does not cla
         └── test/java/com/trustops/backend/
 ```
 
-See [backend/README.md](backend/README.md) for the current backend's file-level guide and commands.
-
 ## Run the current backend
 
 Requirements:
