@@ -119,5 +119,21 @@ class CommentMangerTests {
         Mockito.verify(commentStore).findById(missingId);
         Mockito.verify(commentStore, Mockito.never()).save(Mockito.any(Comment.class));
     }
+    @Test
+    void findsCommentById() {
+        UUID id = UUID.randomUUID();
+        Comment existing = new Comment(
+                id,
+                "Existing comment",
+                ModerationStatus.PENDING,
+                Instant.now()
+        );
+
+        Mockito.when(commentStore.findById(id)).thenReturn(Optional.of(existing));
+
+        Comment res = commentManger.findById(id);
+        assertThat(res).isEqualTo(existing);
+        Mockito.verify(commentStore).findById(id);
+    }
 
 }
