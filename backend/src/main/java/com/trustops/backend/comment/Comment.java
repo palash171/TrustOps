@@ -17,7 +17,7 @@ public class Comment {
     private String text;
 
     @Enumerated(EnumType.STRING) //store enums word
-    @Column(nullable = false)
+    @Column(nullable = false, length=20)
     private ModerationStatus status;
 
     @Column(nullable = false)
