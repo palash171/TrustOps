@@ -3,7 +3,8 @@ package com.trustops.backend.comment;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 /// Changes the stored content
@@ -29,10 +30,14 @@ public class CommentManger {
     }
 
 
-    public List<Comment> findAll() {
-        return commentStore.findAllByOrderByReceivedAtDesc();
+    public Page<Comment> findAll(Pageable pageable) {
+        return commentStore.findAllByOrderByReceivedAtDesc(pageable);
     }
-    public List<Comment> findByStatus(ModerationStatus status) {
-        return commentStore.findAllByStatusOrderByReceivedAtDesc(status);
+    public Page<Comment> findByStatus(ModerationStatus status, Pageable pageable) {
+        return commentStore.findAllByStatusOrderByReceivedAtDesc(status, pageable);
+    }
+
+    public Comment findById(UUID id) {
+        return commentStore.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
     }
 }

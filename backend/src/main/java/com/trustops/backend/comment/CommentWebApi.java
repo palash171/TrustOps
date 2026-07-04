@@ -1,10 +1,12 @@
 package com.trustops.backend.comment;
 
 import jakarta.validation.Valid;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import java.util.UUID;
 
                 ///Reads incoming requests
@@ -33,13 +35,17 @@ public class CommentWebApi {
     }
 
     @GetMapping //get
-    public List<Comment> findAll(@RequestParam(name ="status", required = false) ModerationStatus status) {
+    public Page<Comment> findAll(@RequestParam(name ="status", required = false) ModerationStatus status, @PageableDefault(size = 20)Pageable pageable) {
         // return comment by give status or return all comments if status is not given
         // seek for status in the url given and attach that value to variable status
 
-        if (status == null) return commentManger.findAll();
-        return commentManger.findByStatus(status);
+        if (status == null) return commentManger.findAll(pageable);
+        return commentManger.findByStatus(status, pageable);
     }
 
+    @GetMapping("/{id}")
+    public Comment findById(@PathVariable UUID id) {
+        return commentManger.findById(id);
+    }
 
 }
