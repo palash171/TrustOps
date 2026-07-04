@@ -24,12 +24,15 @@ public class CommentManger {
     }
     public Comment updateStatus(UUID id, ModerationStatus status){
         Comment old = commentStore.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
-        Comment updated = new Comment(id,old.text(),status,old.receivedAt());
+        Comment updated = new Comment(id,old.getText(),status,old.getReceivedAt());
         return commentStore.save(updated);
     }
 
 
     public List<Comment> findAll() {
         return commentStore.findAll();
+    }
+    public List<Comment> findByStatus(ModerationStatus status) {
+        return commentStore.findAllByStatus(status);
     }
 }

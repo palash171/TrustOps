@@ -33,7 +33,13 @@ public class CommentWebApi {
     }
 
     @GetMapping //get
-    public List<Comment> findAll() {
-        return commentManger.findAll();
+    public List<Comment> findAll(@RequestParam(name ="status", required = false) ModerationStatus status) {
+        // return comment by give status or return all comments if status is not given
+        // seek for status in the url given and attach that value to variable status
+
+        if (status == null) return commentManger.findAll();
+        return commentManger.findByStatus(status);
     }
+
+
 }
