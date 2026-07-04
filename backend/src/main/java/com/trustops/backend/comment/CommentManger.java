@@ -30,9 +30,9 @@ public class CommentManger {
 
 
     public List<Comment> findAll() {
-        return commentStore.findAll();
+        return commentStore.findAllByOrderByReceivedAtDesc();
     }
     public List<Comment> findByStatus(ModerationStatus status) {
-        return commentStore.findAllByStatus(status);
+        return commentStore.findAllByStatusOrderByReceivedAtDesc(status);
     }
 }

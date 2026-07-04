@@ -6,5 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CommentStore extends JpaRepository<Comment, UUID> {
-    List<Comment> findAllByStatus(ModerationStatus status);
+    List<Comment> findAllByOrderByReceivedAtDesc();
+    List<Comment> findAllByStatusOrderByReceivedAtDesc(ModerationStatus status);
 }
