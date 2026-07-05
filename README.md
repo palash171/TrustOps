@@ -1,8 +1,6 @@
 # TrustOps
 
-**A human-in-the-loop moderation operations platform for online communities that have outgrown keyword bots.**
-
-TrustOps is designed to help community teams process high message volumes without handing permanent moderation decisions to an opaque model. Incoming content is prioritised for review, moderators remain in control, and every eventual decision should be traceable to the content, policy, model version, and human action that produced it.
+Small online communities can receive abuse, spam, threats, and sudden floods of comments without having a large safety team. We know full manual moderation will be slow and exhausting. So TrustOps is designed to reduce this workload using automated rules and model assisted prioritisation, then presents flagged content in a dashboard where moderators review each case and make the final decision.
 
 > **Current milestone:** TrustOps now supports authenticated, organisation-owned comment ingestion. Customer systems can send events using an API key, while tenant-scoped event identities and PostgreSQL constraints prevent repeated webhook deliveries from creating duplicate comments.
 
