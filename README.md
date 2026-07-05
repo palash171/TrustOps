@@ -4,15 +4,13 @@
 
 TrustOps is designed to help community teams process high message volumes without handing permanent moderation decisions to an opaque model. Incoming content is prioritised for review, moderators remain in control, and every eventual decision should be traceable to the content, policy, model version, and human action that produced it.
 
-> **Current milestone:** the local moderation MVP is complete. TrustOps now includes a persistent Spring Boot API, PostgreSQL storage, and a React/TypeScript dashboard for creating, filtering, approving, and rejecting comments.
+> **Current milestone:** TrustOps now supports authenticated, organisation-owned comment ingestion. Customer systems can send events using an API key, while tenant-scoped event identities and PostgreSQL constraints prevent repeated webhook deliveries from creating duplicate comments.
 
 ## Moderation dashboard
 
 ![TrustOps moderation dashboard](docs/trustops-dashboard.png)
 
-The dashboard provides a working human-review workflow:
-
-The dashboard provides a working human-review workflow:
+The workflow:
 
 - submit comments through the browser;
 - view the newest comments first;
@@ -58,7 +56,13 @@ The current application implements a complete local vertical slice of the modera
 - versioned database creation with Flyway;
 - Docker Compose development environment;
 - health endpoint;
-- unit tests for moderation behaviour.
+- authenticated company ingestion using API keys;
+- API keys stored as SHA-256 hashes instead of raw secrets;
+- organisation ownership attached to ingested comments;
+- external event identity using source and external ID;
+- duplicate-event protection enforced by PostgreSQL;
+- race-safe handling when identical events arrive simultaneously;
+- unit and full HTTP integration tests;
 
 ### Frontend
 - React and TypeScript moderation dashboard;
@@ -97,6 +101,19 @@ POST /api/v1/comments
 | `GET` | `/api/v1/comments/{id}` | Retrieve one comment. |
 | `PATCH` | `/api/v1/comments/{id}/status` | Approve or reject a comment. |
 | `GET` | `/actuator/health` | Check application health. |
+| `POST` | `/api/v1/ingestion/comments` | Authenticated ingestion from a customer system. |
+
+Authenticated company ingestion:
+
+```bash
+curl -X POST "http://localhost:8080/api/v1/ingestion/comments" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: trustops-dev-key" \
+  -d '{
+    "source": "GENERIC_WEBHOOK",
+    "externalId": "company-comment-1001",
+    "text": "Please review this customer comment"
+  }'
 
 Create a comment:
 
@@ -166,7 +183,7 @@ flowchart LR
     Decision --> Metrics["Operational and quality metrics"]
 ```
 
-The intended delivery model is **at least once**: the same external event may arrive more than once, so future ingestion will use a tenant-scoped idempotency key and a database uniqueness constraint to prevent duplicate processing.
+TrustOps uses an **at-least-once ingestion model**. Customer systems may deliver the same event more than once, so TrustOps identifies events using the organisation, source, and external ID. A PostgreSQL uniqueness constraint provides final protection against duplicate storage, including when identical requests arrive simultaneously.
 
 ## Roadmap
 
@@ -179,23 +196,24 @@ The intended delivery model is **at least once**: the same external event may ar
 - [x] Filtering, ordering, and pagination
 - [x] Health endpoint
 - [x] Unit-tested moderation workflow
-- [ ] HTTP integration tests and continuous integration
+- [x] HTTP integration tests and continuous integration
 - [ ] Structured API error format
 
 ### Phase 2 — Multi-tenant control plane
 
-- [ ] Users and organisations
+- [x] Users and organisations
 - [ ] OIDC sign-in
 - [ ] Administrator, moderator, and viewer roles
-- [ ] Tenant ID on every customer-owned record
+- [x] Tenant ID on every customer-owned record
 - [ ] Application-level tenant checks and PostgreSQL row-level security
-- [ ] Hashed API keys for customer-owned integrations
+- [x] Hashed API keys for customer-owned integrations
 
 ### Phase 3 — Reliable ingestion
 
-- [ ] Canonical content-event schema independent of any platform
-- [ ] Signed generic webhook endpoint
-- [ ] Tenant-scoped idempotency keys
+- [x] Canonical content-event schema independent of any platform
+- [x] Authenticated generic webhook endpoint
+- [x] Tenant-scoped idempotency keys
+- [ ] Database protection against simultaneous duplicate deliveries
 - [ ] Durable queue, retries, exponential backoff, and dead-letter handling
 - [ ] One real connector after the generic webhook is reliable
 - [ ] Recorded connector fixtures and contract tests
@@ -332,7 +350,7 @@ Use `docker compose down -v` only when intentionally deleting the local PostgreS
 ## Current limitations
 The current milestone is a local backend foundation, not an internet-ready moderation service:
 
-- there is no authentication or tenant isolation yet;
+- company ingestion is authenticated, but moderator users, roles, and tenant-scoped dashboard access are not implemented yet;
 - ingestion is a direct synchronous API call;
 - comments are manually reviewed and are not classified by AI;
 - the dashboard is currently local and has not been deployed publicly;
