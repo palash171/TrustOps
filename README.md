@@ -4,8 +4,13 @@
 
 TrustOps is designed to help community teams process high message volumes without handing permanent moderation decisions to an opaque model. Incoming content is prioritised for review, moderators remain in control, and every eventual decision should be traceable to the content, policy, model version, and human action that produced it.
 
->  **Current milestone:** the local moderation MVP is complete. TrustOps now includes a persistent Spring Boot API, PostgreSQL storage, and a React/TypeScript dashboard for creating, filtering, approving, and rejecting comments.
+> **Current milestone:** the local moderation MVP is complete. TrustOps now includes a persistent Spring Boot API, PostgreSQL storage, and a React/TypeScript dashboard for creating, filtering, approving, and rejecting comments.
+
+## Moderation dashboard
+
 ![TrustOps moderation dashboard](docs/trustops-dashboard.png)
+
+The dashboard provides a working human-review workflow:
 
 The dashboard provides a working human-review workflow:
 
