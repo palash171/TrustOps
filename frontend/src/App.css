@@ -1,0 +1,241 @@
+/* Main page width, centering, and outside spacing. */
+.dashboard {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto; /*center it*/
+  padding: 48px 0; /*Inside spacing*/
+}
+
+/* Header puts the title on the left and total count on the right. */
+.dashboard-header {
+  display: flex; /*places its direct children in a row.*/
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Small TrustOps label above the main heading. */
+.eyebrow {
+  color: #6558d3;
+  font-size: 50px;
+  font-weight: 700;
+  margin: 0;
+}
+
+h1 {
+  margin: 8px 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+/* Card that shows total or matching comments. */
+.summary {
+  background: white;
+  border: 1px solid #dfe3eb;
+  border-radius: 12px;
+  padding: 16px 24px;
+  display: grid;
+}
+
+.summary strong {
+  font-size: 1.8rem;
+}
+
+.summary span, /* for <span> elements inside summary do this to Every <time> element*/
+time {
+  color: #687086;
+  font-size: 0.85rem;
+}
+
+/* Main comment queue panel. */
+.queue {
+  background: white;
+  border: 1px solid #dfe3eb;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.queue-heading {
+  border-bottom: 1px solid #e8eaf0;
+  margin-bottom: 20px;
+}
+
+/* Repeated layout containing one card for each comment. */
+.comment-list {
+  display: grid;
+  gap: 12px;
+}
+
+/* One stored comment, including its status, time, text, and actions. */
+.comment-card {
+  border: 1px solid #e1e4eb;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.comment-card p {
+  margin-bottom: 0;
+}
+
+.comment-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Status badges share a shape; the specific status controls their colours below. */
+.status {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* PENDING colour. */
+.pending {
+  color: #8a5a00;
+  background: #fff0c2;
+}
+
+/* APPROVED colour. */
+.approved {
+  color: #17643a;
+  background: #d9f7e6;
+}
+
+/* REJECTED colour. */
+.rejected {
+  color: #9c2e2e;
+  background: #ffe0e0;
+}
+
+.error {
+  color: #a52828;
+}
+
+/* On small screens, rows become columns so content remains readable. */
+@media (max-width: 650px) {
+  .dashboard-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .comment-details {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+/* Queue title and status filter share one row on larger screens. */
+.queue-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+
+select {
+  border: 1px solid #d5d9e3;
+  border-radius: 8px;
+  background: white;
+  color: #172033;
+  padding: 8px 12px;
+}
+
+/* Moderation action buttons under a comment. */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.approve-button {
+  color: #17643a;
+  background: #d9f7e6;
+}
+
+.reject-button {
+  color: #9c2e2e;
+  background: #ffe0e0;
+}
+
+/* Previous/current/next controls under the queue. */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pagination button {
+  color: #4035a5;
+  background: #ebe9ff;
+}
+
+/* Form panel used to simulate a community member submitting content. */
+.create-panel {
+  background: white;
+  border: 1px solid #dfe3eb;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.create-panel h2 {
+  margin-top: 0;
+}
+
+/* Accessible label shown above the textarea. */
+.field-label {
+  font-weight: 600;
+}
+
+/* Keep screen-reader text available without showing it visually. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.create-panel form {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+  border: 1px solid #d5d9e3;
+  border-radius: 10px;
+  padding: 12px;
+  color: #172033;
+  background: white;
+  font: inherit;
+}
+
+.submit-button {
+  justify-self: start;
+  color: white;
+  background: #6558d3;
+}

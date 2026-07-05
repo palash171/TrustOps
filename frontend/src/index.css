@@ -1,0 +1,30 @@
+/*
+ * Global CSS applies to the entire frontend.
+ * Component-specific dashboard styles live in App.css.
+ */
+:root {
+  /* Default font, text colour, and page background. */
+  font-family: Inter, system-ui, sans-serif;
+  color: #172033;
+  background: #f4f6fa;
+  font-synthesis: none;
+}
+
+/* Include borders and padding inside an element's chosen width. */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove the browser's default outside spacing and fill the screen height. */
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Form controls should use the same font as the rest of TrustOps. */
+button,
+select,
+input {
+  font: inherit;
+}
