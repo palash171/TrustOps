@@ -23,13 +23,39 @@ public class Comment {
     @Column(nullable = false)
     private Instant receivedAt;
 
-    /** what the above looks like after hibernating
+    //customer company that owns this comment
+    //UUID points to organizations.id and PostgreSQL foreign key checks it exists
+    @Column(name = "organization_id", nullable = false)
+    private UUID organizationId;
+
+    //Where the customer says the comment originated.
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private ContentSource source;
+
+
+     // ID assigned by the customer's own system.
+    @Column(name = "external_id", nullable = false, length = 255)
+    private String externalId;
+
+    /** above  after hibernating
      * INSERT INTO comments (comment_id,body, moderation_status,received_at)
      * VALUES (id,'Hello','PENDING',time);
     */
     //constructor
-    public Comment(UUID id, String text, ModerationStatus status, Instant receivedAt) {
+    public Comment(
+            UUID id,
+            UUID organizationId,
+            ContentSource source,
+            String externalId,
+            String text,
+            ModerationStatus status,
+            Instant receivedAt
+    ) {
         this.id = id;
+        this.organizationId = organizationId;
+        this.source = source;
+        this.externalId = externalId;
         this.text = text;
         this.status = status;
         this.receivedAt = receivedAt;
@@ -43,4 +69,7 @@ public class Comment {
     public String getText() {return text;}
     public ModerationStatus getStatus() {return status;}
     public Instant getReceivedAt() {return receivedAt;}
+    public UUID getOrganizationId() {return organizationId;}
+    public ContentSource getSource() {return source;}
+    public String getExternalId() {return externalId;}
 }

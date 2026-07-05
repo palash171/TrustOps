@@ -8,33 +8,28 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 
-/**
- * One customer company using TrustOps.
- *
- * Spring/Hibernate creates Organization objects from rows in the
- * organizations table.
- */
-
-@Entity
-@Table(name = "organizations")
+//one customer company using TrustOps
+//Hibernate uses each row in organizations to build one Organization object
+@Entity //tell Hibernate this class is stored in the database
+@Table(name = "organizations") //connect this class to the organizations table
 public class Organization {
 
-    @Id
+    @Id //primary key for one company
     UUID id;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 200) //company name is required and limited to 200 letters
     private String name;
 
     /**
-     * We store a hash rather than the real secret API key.
-     * If the database leaked, the raw key would not be sitting here.
+     *  store hash rather than the real secret API key to secure key
      */
     @Column(name = "api_key_hash", nullable = false, unique = true, length = 64)
     private String apiKeyHash;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false) //Java createdAt connects to SQL created_at
     private Instant createdAt;
 
+    //we use this constructor when our Java code creates an organisation object
     public Organization(
             UUID id,
             String name,
@@ -47,13 +42,11 @@ public class Organization {
         this.createdAt = createdAt;
     }
 
-    /**
-     * Hibernate needs a no-argument constructor when it rebuilds
-     * an object from a database row.
-     */
+    //Hibernate calls this empty constructor when rebuilding an object from a database row
     protected Organization() {
     }
 
+    //getters let the authentication service read the company information
     public UUID getId() {
         return id;
     }
@@ -69,5 +62,4 @@ public class Organization {
     public Instant getCreatedAt() {
         return createdAt;
     }
-}
 }

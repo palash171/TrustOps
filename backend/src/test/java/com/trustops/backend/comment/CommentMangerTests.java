@@ -50,6 +50,12 @@ class CommentMangerTests {
         assertThat(created.getReceivedAt()).isNotNull();
 
         Mockito.verify(commentStore).save(created); //ensures .save was called upon commentStore
+
+        assertThat(created.getOrganizationId()).isEqualTo(CommentManger.LOCAL_DEMO_ORGANIZATION_ID);
+
+        assertThat(created.getSource()).isEqualTo(ContentSource.TRUSTOPS_DEMO);
+
+        assertThat(created.getExternalId()).isEqualTo(created.getId().toString());
     }
 
     @Test
@@ -71,15 +77,25 @@ class CommentMangerTests {
     void returnsPageFilteredByStatus (){
 
         Pageable pageable = PageRequest.of(0, 20);
-        Comment pendingCommment = new Comment(UUID.randomUUID(),"a",ModerationStatus.PENDING, Instant.now());
+        UUID id = UUID.randomUUID();
 
-        Page<Comment> page = new PageImpl<>(List.of(pendingCommment),pageable,1);
+        Comment pendingComment = new Comment(
+                id,
+                CommentManger.LOCAL_DEMO_ORGANIZATION_ID,
+                ContentSource.TRUSTOPS_DEMO,
+                id.toString(),
+                "Existing comment",
+                ModerationStatus.PENDING,
+                Instant.now()
+        );
+
+        Page<Comment> page = new PageImpl<>(List.of(pendingComment),pageable,1);
 
         Mockito.when(commentStore.findAllByStatusOrderByReceivedAtDesc(ModerationStatus.PENDING, pageable)).thenReturn(page);
 
         Page<Comment> result = commentManger.findByStatus(ModerationStatus.PENDING, pageable);
 
-        assertThat(result.getContent()).containsExactly(pendingCommment);
+        assertThat(result.getContent()).containsExactly(pendingComment);
 
         assertThat(result.getTotalElements()).isEqualTo(1);
 
@@ -104,6 +120,12 @@ class CommentMangerTests {
 
         Mockito.verify(commentStore).findById(created.getId());
         Mockito.verify(commentStore).save(updated);
+
+        assertThat(updated.getOrganizationId()).isEqualTo(created.getOrganizationId());
+
+        assertThat(updated.getSource()).isEqualTo(created.getSource());
+
+        assertThat(updated.getExternalId()).isEqualTo(created.getExternalId());
     }
 
     @Test
@@ -124,6 +146,9 @@ class CommentMangerTests {
         UUID id = UUID.randomUUID();
         Comment existing = new Comment(
                 id,
+                CommentManger.LOCAL_DEMO_ORGANIZATION_ID,
+                ContentSource.TRUSTOPS_DEMO,
+                id.toString(),
                 "Existing comment",
                 ModerationStatus.PENDING,
                 Instant.now()

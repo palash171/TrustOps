@@ -11,21 +11,37 @@ import java.util.UUID;
 
 @Service // talks to spring to manage oe comment service object
 public class CommentManger {
-
+    //temporary company for comments created through local demo form
+    //secure ingestion gets real company from API key instead
+    static final UUID LOCAL_DEMO_ORGANIZATION_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private final CommentStore commentStore;
 
     public CommentManger(CommentStore cr) {
         commentStore = cr;
     }
     //create a new comment to store inside map
-    public Comment create(String text){
-        Comment c = new Comment(UUID.randomUUID(), text.strip(), ModerationStatus.PENDING, Instant.now());
-        return commentStore.save(c); //add comment into table
 
+    public Comment create(String text) {
+        UUID id = UUID.randomUUID();
+
+        Comment comment = new Comment(
+                id,
+                LOCAL_DEMO_ORGANIZATION_ID,
+                ContentSource.TRUSTOPS_DEMO,
+                id.toString(),
+                text.strip(),
+                ModerationStatus.PENDING,
+                Instant.now()
+        );
+
+        return commentStore.save(comment);
     }
     public Comment updateStatus(UUID id, ModerationStatus status){
         Comment old = commentStore.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
-        Comment updated = new Comment(id,old.getText(),status,old.getReceivedAt());
+        Comment updated = new Comment(
+                old.getId(), old.getOrganizationId(), old.getSource(),
+                old.getExternalId(), old.getText(), status, old.getReceivedAt()
+        );
         return commentStore.save(updated);
     }
 
