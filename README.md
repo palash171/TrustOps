@@ -4,7 +4,18 @@
 
 TrustOps is designed to help community teams process high message volumes without handing permanent moderation decisions to an opaque model. Incoming content is prioritised for review, moderators remain in control, and every eventual decision should be traceable to the content, policy, model version, and human action that produced it.
 
-> **Current milestone:** the persistent moderation API is working. Multi-tenancy, ingestion, automated classification, policy evaluation, audit history, authentication, and the review dashboard are the next implementation phases.
+>  **Current milestone:** the local moderation MVP is complete. TrustOps now includes a persistent Spring Boot API, PostgreSQL storage, and a React/TypeScript dashboard for creating, filtering, approving, and rejecting comments.
+![TrustOps moderation dashboard](docs/trustops-dashboard.png)
+
+The dashboard provides a working human-review workflow:
+
+- submit comments through the browser;
+- view the newest comments first;
+- filter by moderation status;
+- approve or reject comments;
+- move through paginated results;
+- display loading, empty, and error states;
+- preserve decisions in PostgreSQL after refreshing.
 
 ## Why TrustOps exists
 
@@ -27,8 +38,9 @@ The guiding product decision is deliberate: **AI prioritises work; humans approv
 
 ## What works today
 
-The current backend implements the first complete vertical slice of the moderation workflow:
+The current application implements a complete local vertical slice of the moderation workflow:
 
+### Backend
 - REST API for ingesting comments;
 - PostgreSQL persistence;
 - `PENDING`, `APPROVED`, and `REJECTED` moderation states;
@@ -42,6 +54,14 @@ The current backend implements the first complete vertical slice of the moderati
 - Docker Compose development environment;
 - health endpoint;
 - unit tests for moderation behaviour.
+
+### Frontend
+- React and TypeScript moderation dashboard;
+- browser-based comment submission;
+- status filtering and pagination;
+- approve and reject actions;
+- responsive dashboard layout;
+- frontend API and user-workflow tests.
 
 ### Current request flow
 
@@ -187,9 +207,9 @@ The intended delivery model is **at least once**: the same external event may ar
 
 ### Phase 5 — Human review and auditability
 
-- [ ] React/TypeScript moderation dashboard
+- [x] React/TypeScript moderation dashboard
 - [ ] Prioritised review queue
-- [ ] Approve, remove, and incorrect-prediction actions
+- [x] Approve, remove, and incorrect-prediction actions
 - [ ] Reviewer notes and reversible actions
 - [ ] Immutable audit timeline containing input hash, scores, matched rules, model version, policy version, reviewer, and timestamps
 - [ ] Daily workload and false-positive statistics
@@ -226,22 +246,32 @@ These questions drive future implementation and testing; the README does not cla
 ```text
 .
 ├── README.md
-└── backend/
-    ├── compose.yaml
-    ├── pom.xml
+├── docs/
+│   └── trustops-dashboard.png
+├── backend/
+│   ├── compose.yaml
+│   ├── pom.xml
+│   └── src/
+└── frontend/
+    ├── package.json
+    ├── vite.config.ts
     └── src/
-        ├── main/
-        │   ├── java/com/trustops/backend/
-        │   └── resources/db/migration/
-        └── test/java/com/trustops/backend/
+        ├── api/
+        ├── components/
+        ├── test/
+        ├── App.tsx
+        └── types/
 ```
 
-## Run the current backend
+## Run locally
 
 Requirements:
 
 - Java 21 or newer
 - Docker Desktop
+- Node.js and npm
+
+Start PostgreSQL and the backend:
 
 ```bash
 cd backend
@@ -249,13 +279,37 @@ docker compose up -d
 ./mvnw spring-boot:run
 ```
 
-Run the tests:
+In another terminal, start the frontend:
 
 ```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+Run the backend tests:
+
+```bash
+cd backend
 ./mvnw test
 ```
 
-Check health:
+Run the frontend checks:
+
+```bash
+cd frontend
+npm run lint
+npm test
+npm run build
+```
+
+Check backend health:
 
 ```bash
 curl "http://localhost:8080/actuator/health"
@@ -264,20 +318,20 @@ curl "http://localhost:8080/actuator/health"
 Stop local infrastructure:
 
 ```bash
+cd backend
 docker compose down
 ```
 
 Use `docker compose down -v` only when intentionally deleting the local PostgreSQL data volume.
 
 ## Current limitations
-
 The current milestone is a local backend foundation, not an internet-ready moderation service:
 
 - there is no authentication or tenant isolation yet;
 - ingestion is a direct synchronous API call;
 - comments are manually reviewed and are not classified by AI;
+- the dashboard is currently local and has not been deployed publicly;
 - there is no durable queue, retry policy, audit ledger, or connector;
-- there is no frontend dashboard or cloud deployment;
 - returning JPA entities directly is acceptable for the current slice but will be replaced with explicit API response models as the contract grows.
 
 These limitations are explicit so future work can be evaluated against real engineering goals rather than hidden behind a polished UI.
