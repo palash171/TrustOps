@@ -19,6 +19,7 @@ export type Comment = {
   receivedAt: string
 }
 
+
 /**
  * Describes Spring's paginated response.
  * content stores this page's comments; the other fields describe page position and totals.
